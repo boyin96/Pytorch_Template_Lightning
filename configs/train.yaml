@@ -7,14 +7,14 @@ defaults:
   - data: mnist
   - model: mnist
   - callbacks: default
-  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - logger: default
   - trainer: default
   - paths: default
   - extras: default
   - hydra: default
 
   # experiment configs allow for version control of specific hyperparameters
-  # e.g. best hyperparameters for given model and datamodule
+  # e.g. the best hyperparameters for given model and datamodule
   - experiment: null
 
   # config for hyperparameter optimization
@@ -36,14 +36,14 @@ task_name: "train"
 tags: ["dev"]
 
 # set False to skip model training
-train: True
+train: true
 
 # evaluate on test set, using best model weights achieved during training
 # lightning chooses best weights based on the metric specified in checkpoint callback
-test: True
+test: false
 
 # simply provide checkpoint path to resume training
 ckpt_path: null
 
 # seed for random number generators in pytorch, numpy and python.random
-seed: null
+seed: 42

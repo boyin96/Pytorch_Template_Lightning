@@ -1,10 +1,15 @@
 import torch
-from torch import nn
+import torch.nn as nn
+
+__all__ = [
+    "SimpleDenseNet",
+]
 
 
 class SimpleDenseNet(nn.Module):
-    """A simple fully-connected neural net for computing predictions."""
-
+    """
+    A simple fully-connected neural net for computing predictions.
+    """
     def __init__(
         self,
         input_size: int = 784,
@@ -13,13 +18,14 @@ class SimpleDenseNet(nn.Module):
         lin3_size: int = 256,
         output_size: int = 10,
     ) -> None:
-        """Initialize a `SimpleDenseNet` module.
-
-        :param input_size: The number of input features.
-        :param lin1_size: The number of output features of the first linear layer.
-        :param lin2_size: The number of output features of the second linear layer.
-        :param lin3_size: The number of output features of the third linear layer.
-        :param output_size: The number of output features of the final linear layer.
+        """
+        Initialize a SimpleDenseNet module.
+        Args:
+            input_size: The number of input features.
+            lin1_size: The number of output features of the first linear layer.
+            lin2_size: The number of output features of the second linear layer.
+            lin3_size: The number of output features of the third linear layer.
+            output_size: The number of output features of the final linear layer.
         """
         super().__init__()
 
@@ -37,14 +43,16 @@ class SimpleDenseNet(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Perform a single forward pass through the network.
-
-        :param x: The input tensor.
-        :return: A tensor of predictions.
+        """
+        Perform a single forward pass through the network.
+        Args:
+            x: The input tensor.
+        Returns:
+            A tensor of predictions.
         """
         batch_size, channels, width, height = x.size()
 
-        # (batch, 1, width, height) -> (batch, 1*width*height)
+        # (batch, 1, width, height) -> (batch, 1*width*height).
         x = x.view(batch_size, -1)
 
         return self.model(x)

@@ -1,4 +1,5 @@
 # csv logger built in lightning
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.loggers.csv_logs.html#csv-logger
 
 csv:
   _target_: lightning.pytorch.loggers.csv_logs.CSVLogger
