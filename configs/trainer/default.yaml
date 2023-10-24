@@ -1,19 +1,48 @@
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#init
+
 _target_: lightning.pytorch.trainer.Trainer
 
+# default path for logs and weights when no logger or lightning.pytorch.callbacks.ModelCheckpoint callback passed
 default_root_dir: ${paths.output_dir}
 
-min_epochs: 1 # prevents early stopping
-max_epochs: 10
+# force training for at least these many epochs
+min_epochs: 1
+# stop training once this number of epochs is reached
+max_epochs: 4
 
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#devices
 accelerator: cpu
 devices: 1
 
-# mixed precision for extra speed-up
-# precision: 16
+# mixed precision for extra speed-up on GPU
+# https://lightning.ai/docs/pytorch/stable/common/precision_basic.html
+# https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/performance_improving/amp_cn.html
+precision: 32-true
 
-# perform a validation loop every N training epochs
+# the value at which to clip gradients
+gradient_clip_val: null
+
+# perform a validation loop in LightningModule every N training epochs
 check_val_every_n_epoch: 1
 
+# accumulates gradients over k batches before stepping the optimizer
+# useful for large model training, i.e. split large batches into smaller ones
+# use smaller learning rate, i.e. current lr = lr / k
+accumulate_grad_batches: 1
+
+# to profile individual steps during training and assist in identifying bottlenecks
+# https://lightning.ai/docs/pytorch/stable/tuning/profiler.html
+profiler:
+  _target_: lightning.pytorch.profilers.SimpleProfiler
+  dirpath: ${paths.output_dir}
+  filename: profile_time_logs
+
+# the value (True or False) to set the torch.backends.cudnn.deterministic flag
 # set True to ensure deterministic results
 # makes training slower but gives more reproducibility than just setting seeds
-deterministic: False
+deterministic: false
+
+# the value (True or False) to set torch.backends.cudnn.benchmark flag
+# the CUDNN auto-tuner will try to find the best algorithm for the hardware when a new input size is encountered
+# this might also increase the memory usage
+benchmark: false

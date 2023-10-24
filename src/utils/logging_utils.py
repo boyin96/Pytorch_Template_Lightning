@@ -19,9 +19,9 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
         - Number of model parameters
     Args:
         object_dict: A dictionary containing the following objects:
-        - `"cfg"`: A DictConfig object containing the main config.
-        - `"model"`: The Lightning model.
-        - `"trainer"`: The Lightning trainer.
+        - "cfg": A DictConfig object containing the main config.
+        - "model": The Lightning model.
+        - "trainer": The Lightning trainer.
     """
     hparams = {}
 

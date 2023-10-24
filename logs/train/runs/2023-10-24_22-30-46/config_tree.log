@@ -1,0 +1,122 @@
+CONFIG
++-- data
+|   `-- _target_: src.data.mnist_datamodule.MNISTDataModule                                                                        
+|       data_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\data\                                                
+|       batch_size: 128                                                                                                            
+|       train_val_test_split:                                                                                                      
+|       - 55000                                                                                                                    
+|       - 5000                                                                                                                     
+|       - 10000                                                                                                                    
+|       num_workers: 1                                                                                                             
+|       pin_memory: false                                                                                                          
+|                                                                                                                                  
++-- model
+|   `-- _target_: src.models.mnist_module.MNISTLitModule                                                                           
+|       net:                                                                                                                       
+|         _target_: src.models.components.simple_dense_net.SimpleDenseNet                                                          
+|         input_size: 784                                                                                                          
+|         lin1_size: 64                                                                                                            
+|         lin2_size: 128                                                                                                           
+|         lin3_size: 64                                                                                                            
+|         output_size: 10                                                                                                          
+|       optimizer:                                                                                                                 
+|         _target_: torch.optim.Adam                                                                                               
+|         _partial_: true                                                                                                          
+|         lr: 0.001                                                                                                                
+|         weight_decay: 0.0                                                                                                        
+|       scheduler:                                                                                                                 
+|         _target_: torch.optim.lr_scheduler.ReduceLROnPlateau                                                                     
+|         _partial_: true                                                                                                          
+|         mode: min                                                                                                                
+|         factor: 0.1                                                                                                              
+|         patience: 10                                                                                                             
+|       use_compile: false                                                                                                         
+|                                                                                                                                  
++-- callbacks
+|   `-- DeviceStatsMonitor:                                                                                                        
+|         _target_: lightning.pytorch.callbacks.DeviceStatsMonitor                                                                 
+|       EarlyStopping:                                                                                                             
+|         _target_: lightning.pytorch.callbacks.EarlyStopping                                                                      
+|         monitor: train_acc                                                                                                       
+|         min_delta: 0.0                                                                                                           
+|         patience: 100                                                                                                            
+|         verbose: false                                                                                                           
+|         mode: max                                                                                                                
+|         strict: true                                                                                                             
+|         check_finite: true                                                                                                       
+|         stopping_threshold: null                                                                                                 
+|         divergence_threshold: null                                                                                               
+|         check_on_train_epoch_end: null                                                                                           
+|         log_rank_zero_only: false                                                                                                
+|       ModelCheckpoint:                                                                                                           
+|         _target_: lightning.pytorch.callbacks.ModelCheckpoint                                                                    
+|         dirpath: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\train\runs\2023-10-24_22-30-46/checkpoints     
+|         filename: checkpoints_{epoch:03d}                                                                                        
+|         monitor: train_acc                                                                                                       
+|         verbose: false                                                                                                           
+|         save_last: null                                                                                                          
+|         save_top_k: 2                                                                                                            
+|         mode: max                                                                                                                
+|         auto_insert_metric_name: false                                                                                           
+|         save_weights_only: false                                                                                                 
+|         every_n_train_steps: null                                                                                                
+|         train_time_interval: null                                                                                                
+|         every_n_epochs: 1                                                                                                        
+|         save_on_train_epoch_end: null                                                                                            
+|         enable_version_counter: true                                                                                             
+|       RichModelSummary:                                                                                                          
+|         _target_: lightning.pytorch.callbacks.RichModelSummary                                                                   
+|         max_depth: -1                                                                                                            
+|       RichProgressBar:                                                                                                           
+|         _target_: lightning.pytorch.callbacks.RichProgressBar                                                                    
+|         refresh_rate: 1                                                                                                          
+|         leave: true                                                                                                              
+|                                                                                                                                  
++-- logger
+|   `-- CSVLogger:                                                                                                                 
+|         _target_: lightning.pytorch.loggers.csv_logs.CSVLogger                                                                   
+|         save_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\train\runs\2023-10-24_22-30-46                
+|         name: csv                                                                                                                
+|                                                                                                                                  
++-- trainer
+|   `-- _target_: lightning.pytorch.trainer.Trainer                                                                                
+|       default_root_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\train\runs\2023-10-24_22-30-46          
+|       min_epochs: 1                                                                                                              
+|       max_epochs: 4                                                                                                              
+|       accelerator: cpu                                                                                                           
+|       devices: 1                                                                                                                 
+|       precision: 32-true                                                                                                         
+|       gradient_clip_val: null                                                                                                    
+|       check_val_every_n_epoch: 1                                                                                                 
+|       accumulate_grad_batches: 1                                                                                                 
+|       profiler:                                                                                                                  
+|         _target_: lightning.pytorch.profilers.SimpleProfiler                                                                     
+|         dirpath: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\train\runs\2023-10-24_22-30-46                 
+|         filename: profile_time_logs                                                                                              
+|       deterministic: false                                                                                                       
+|       benchmark: false                                                                                                           
+|                                                                                                                                  
++-- paths
+|   `-- root_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning                                                      
+|       data_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\data\                                                
+|       log_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\                                                 
+|       output_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\logs\train\runs\2023-10-24_22-30-46                
+|       work_dir: E:\Academic Research\Code\Python\Pytorch_Template_Lightning\src                                                  
+|                                                                                                                                  
++-- extras
+|   `-- ignore_warnings: false                                                                                                     
+|       enforce_tags: true                                                                                                         
+|       print_config: true                                                                                                         
+|                                                                                                                                  
++-- task_name
+|   `-- train                                                                                                                      
++-- tags
+|   `-- ['dev']                                                                                                                    
++-- train
+|   `-- True                                                                                                                       
++-- test
+|   `-- False                                                                                                                      
++-- ckpt_path
+|   `-- None                                                                                                                       
+`-- seed
+    `-- 42                                                                                                                         

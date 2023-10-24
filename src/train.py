@@ -7,7 +7,15 @@ from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
-rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+# Setting path and environment variables with one-liner.
+rootutils.setup_root(
+    __file__,
+    indicator=".project-root",
+    project_root_env_var=True,  # Adding PROJECT_ROOT environment variable to os.environ.
+    dotenv=True,  # Loading environment variables from ".env" in root dir to os.environ.
+    pythonpath=True,  # Adding project root dir to PYTHONPATH.
+    cwd=False,
+)
 
 from src.utils import (
     RankedLogger,
@@ -38,18 +46,23 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
 
+    # Instantiating Datamodule.
     log.info("Instantiating datamodule <src.data.mnist_datamodule.MNISTDataModule>...")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
 
+    # Instantiating Modelmodule.
     log.info("Instantiating model <src.models.mnist_module.MNISTLitModule>...")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
+    # Instantiating Callbacks.
     log.info("Instantiating callbacks...")
     callbacks: List[Callback] = instantiate_callbacks(cfg.get("callbacks"))
 
+    # Instantiating Loggers.
     log.info("Instantiating loggers...")
     logger: List[Logger] = instantiate_loggers(cfg.get("logger"))
 
+    # Instantiating Trainer.
     log.info("Instantiating trainer <lightning.pytorch.trainer.Trainer>...")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
@@ -69,6 +82,7 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     if cfg.get("train"):
         log.info("Starting training!")
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+        log.info("Training end!")
 
     train_metrics = trainer.callback_metrics
 
@@ -79,6 +93,7 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
             log.warning("Best ckpt not found! Using current weights for testing...")
             ckpt_path = None
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        log.info("Testing end!")
         log.info(f"Best ckpt path: {ckpt_path}")
 
     test_metrics = trainer.callback_metrics

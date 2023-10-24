@@ -1,9 +1,5 @@
+# https://lightning.ai/docs/pytorch/stable/api_references.html#loggers
 # train with many loggers at once
 
 defaults:
   - csv
-  # - comet
-  # - mlflow
-  # - neptune
-  # - tensorboard
-  # - wandb
